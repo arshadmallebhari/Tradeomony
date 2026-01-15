@@ -16,6 +16,7 @@ export default function AdminProductsPage() {
     }, []);
 
     const fetchProducts = async () => {
+        if (!supabase) return;
         try {
             // Using 'as any' just in case types aren't fully synced yet
             const { data, error } = await supabase

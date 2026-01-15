@@ -16,6 +16,7 @@ export default function AdminUsersPage() {
     }, []);
 
     const fetchUsers = async () => {
+        if (!supabase) return;
         try {
             const { data, error } = await supabase
                 .from('profiles')

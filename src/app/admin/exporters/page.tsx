@@ -17,6 +17,7 @@ export default function AdminExportersPage() {
     }, []);
 
     const fetchExporters = async () => {
+        if (!supabase) return;
         try {
             const { data, error } = await supabase
                 .from('exporter_profiles')

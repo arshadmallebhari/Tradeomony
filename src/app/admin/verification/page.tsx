@@ -16,6 +16,7 @@ export default function AdminVerification() {
     }, []);
 
     const fetchProfiles = async () => {
+        if (!supabase) return;
         try {
             const { data, error } = await supabase
                 .from('exporter_profiles')
@@ -33,6 +34,7 @@ export default function AdminVerification() {
     };
 
     const handleVerify = async (id: string, currentStatus: boolean) => {
+        if (!supabase) return;
         try {
             const { error } = await (supabase.from('exporter_profiles') as any)
                 .update({ verified: !currentStatus })
