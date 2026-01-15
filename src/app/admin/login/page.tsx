@@ -24,20 +24,28 @@ export default function AdminLoginPage() {
         setIsLoading(true);
         setError('');
 
+        console.log('Starting login...');
+
         try {
+            console.log('Attempting sign in...');
             const { data, error: authError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
+            console.log('Sign in response:', { data, authError });
+
             if (authError) throw authError;
 
+            console.log('Checking admin role...');
             // Check if user is admin
             const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
                 .select('role')
                 .eq('id', data.user.id)
                 .single();
+
+            console.log('Profile data:', { profileData, profileError });
 
             const profile = profileData as { role: string } | null;
 
@@ -50,6 +58,7 @@ export default function AdminLoginPage() {
                 throw new Error('Unauthorized: Admin access only');
             }
 
+            console.log('Login successful, redirecting...');
             // Use hard redirect to ensure cookies are fresh
             window.location.href = '/admin/dashboard';
         } catch (error: any) {
