@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { Database } from '@/types/database';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
@@ -11,11 +12,13 @@ export default async function DashboardPage() {
     }
 
     // Fetch user profile to get role
-    const { data: profile } = await (supabase
+    const { data } = await supabase
         .from('profiles')
         .select('role, onboarding_completed')
         .eq('id', user.id)
-        .single() as any);
+        .single();
+
+    const profile = data as { role: string; onboarding_completed: boolean } | null;
 
     if (!profile?.onboarding_completed) {
         redirect('/onboarding');

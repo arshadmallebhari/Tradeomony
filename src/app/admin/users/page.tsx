@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/types/database';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Link from 'next/link';
 
 export default function AdminUsersPage() {
-    const [users, setUsers] = useState<any[]>([]);
+    const [users, setUsers] = useState<Database['public']['Tables']['profiles']['Row'][]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,10 +17,11 @@ export default function AdminUsersPage() {
 
     const fetchUsers = async () => {
         try {
-            const { data, error } = await (supabase
-                .from('profiles') as any)
+            const { data, error } = await supabase
+                .from('profiles')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .returns<Database['public']['Tables']['profiles']['Row'][]>();
 
             if (error) throw error;
             setUsers(data || []);

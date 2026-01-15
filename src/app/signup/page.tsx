@@ -44,7 +44,7 @@ export default function SignupPage() {
         setError('');
 
         try {
-            const { data, error } = await supabase.auth.signUp({
+            const { error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -129,7 +129,7 @@ export default function SignupPage() {
                                         </svg>
                                     </div>
                                     <h3 className="text-2xl font-semibold text-secondary-900 mb-3">
-                                        I'm an Exporter
+                                        I&apos;m an Exporter
                                     </h3>
                                     <p className="text-secondary-600 mb-6">
                                         Showcase your products to global buyers and grow your export business
@@ -174,7 +174,7 @@ export default function SignupPage() {
                                         </svg>
                                     </div>
                                     <h3 className="text-2xl font-semibold text-secondary-900 mb-3">
-                                        I'm an Importer
+                                        I&apos;m an Importer
                                     </h3>
                                     <p className="text-secondary-600 mb-6">
                                         Find verified suppliers and source quality products from India

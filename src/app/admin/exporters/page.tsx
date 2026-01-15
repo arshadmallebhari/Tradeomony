@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/types/database';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 
 export default function AdminExportersPage() {
-    const [exporters, setExporters] = useState<any[]>([]);
+    const [exporters, setExporters] = useState<Database['public']['Tables']['exporter_profiles']['Row'][]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,11 +18,12 @@ export default function AdminExportersPage() {
 
     const fetchExporters = async () => {
         try {
-            const { data, error } = await (supabase
-                .from('exporter_profiles') as any)
-                .select('id, company_name, user_id, city, country, products, verified, created_at')
+            const { data, error } = await supabase
+                .from('exporter_profiles')
+                .select('*')
                 .eq('verified', true)
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .returns<Database['public']['Tables']['exporter_profiles']['Row'][]>();
 
             if (error) throw error;
             setExporters(data || []);

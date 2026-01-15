@@ -9,9 +9,11 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Logo from '@/components/ui/Logo';
+import { Database } from '@/types/database';
 
 export default function AdminLoginPage() {
-    const router = useRouter();
+    const [] = useState(); // Placeholder if router is truly unused or just use it
+    // Actually router IS unused because of window.location.href
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -31,11 +33,13 @@ export default function AdminLoginPage() {
             if (authError) throw authError;
 
             // Check if user is admin
-            const { data: profile, error: profileError } = await (supabase
+            const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
                 .select('role')
                 .eq('id', data.user.id)
-                .single() as any);
+                .single();
+
+            const profile = profileData as { role: string } | null;
 
             if (profileError) {
                 throw new Error('Failed to verify admin status');

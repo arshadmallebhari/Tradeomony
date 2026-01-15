@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/types/database';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 
 export default function AdminVerification() {
-    const [profiles, setProfiles] = useState<any[]>([]);
+    const [profiles, setProfiles] = useState<Database['public']['Tables']['exporter_profiles']['Row'][]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,10 +17,11 @@ export default function AdminVerification() {
 
     const fetchProfiles = async () => {
         try {
-            const { data, error } = await (supabase
-                .from('exporter_profiles') as any)
+            const { data, error } = await supabase
+                .from('exporter_profiles')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .returns<Database['public']['Tables']['exporter_profiles']['Row'][]>();
 
             if (error) throw error;
             setProfiles(data || []);
@@ -71,7 +73,7 @@ export default function AdminVerification() {
                                 <td className="px-6 py-4">
                                     <div>
                                         <div className="font-semibold text-secondary-900">{profile.company_name}</div>
-                                        <div className="text-sm text-secondary-500">{profile.email}</div>
+                                        {/* email is in profiles table, not exporter_profiles */}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-secondary-600">

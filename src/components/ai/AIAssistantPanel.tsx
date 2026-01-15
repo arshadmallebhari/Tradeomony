@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@/components/ui/Button';
 
 export default function AIAssistantPanel() {
     const [isOpen, setIsOpen] = useState(false);
@@ -99,8 +98,8 @@ export default function AIAssistantPanel() {
                                     >
                                         <div
                                             className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${msg.role === 'user'
-                                                    ? 'bg-primary-600 text-white rounded-br-none'
-                                                    : 'bg-white text-secondary-700 rounded-bl-none border border-secondary-200'
+                                                ? 'bg-primary-600 text-white rounded-br-none'
+                                                : 'bg-white text-secondary-700 rounded-bl-none border border-secondary-200'
                                                 }`}
                                         >
                                             {msg.text}

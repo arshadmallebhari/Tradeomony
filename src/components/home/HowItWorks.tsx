@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const steps = [
     {
@@ -84,11 +85,13 @@ export default function HowItWorks() {
                                 {/* Image Container with Interactive Effect */}
                                 <div className="image-interactive mb-8 rounded-2xl bg-white shadow-soft-lg p-3 ring-1 ring-secondary-100">
                                     <div className="image-interactive-inner rounded-xl overflow-hidden bg-secondary-50 aspect-[4/3] relative">
-                                        <img
+                                        <Image
                                             src={step.image}
                                             alt={step.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                            fill
+                                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                         />
+                                        <div className="absolute inset-0 bg-primary-600/10 backdrop-blur-[2px]"></div>
 
                                         {/* Floating Badge */}
                                         <div className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center shadow-sm text-primary-600">

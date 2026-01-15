@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { Database } from '@/types/database';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -23,7 +24,7 @@ export default function LoginPage() {
         setError('');
 
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data: authData, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
@@ -31,11 +32,13 @@ export default function LoginPage() {
             if (error) throw error;
 
             // Check user role and redirect
-            const { data: profile } = await (supabase
-                .from('profiles') as any)
+            const { data: profileResponse } = await supabase
+                .from('profiles')
                 .select('role, onboarding_completed')
-                .eq('id', data.user.id)
+                .eq('id', authData.user.id)
                 .single();
+
+            const profile = profileResponse as { role: string; onboarding_completed: boolean } | null;
 
             if (profile?.role === 'admin') {
                 router.push('/admin/dashboard');
@@ -163,7 +166,7 @@ export default function LoginPage() {
                     </Button>
 
                     <p className="mt-6 text-center text-sm text-secondary-600">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link href="/signup" className="text-primary-600 hover:text-primary-700 font-medium">
                             Sign up
                         </Link>

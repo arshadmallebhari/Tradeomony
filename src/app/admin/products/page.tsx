@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/types/database';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 
 export default function AdminProductsPage() {
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<Database['public']['Tables']['products']['Row'][]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,10 +18,11 @@ export default function AdminProductsPage() {
     const fetchProducts = async () => {
         try {
             // Using 'as any' just in case types aren't fully synced yet
-            const { data, error } = await (supabase
-                .from('products') as any)
+            const { data, error } = await supabase
+                .from('products')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .returns<Database['public']['Tables']['products']['Row'][]>();
 
             if (error) throw error;
             setProducts(data || []);
@@ -57,12 +59,8 @@ export default function AdminProductsPage() {
                             {products.map((product) => (
                                 <tr key={product.id} className="hover:bg-secondary-50 transition-colors">
                                     <td className="px-6 py-4">
-                                        <div className="font-semibold text-secondary-900">{product.name}</div>
-                                        {product.category && (
-                                            <span className="text-xs bg-secondary-100 text-secondary-600 px-2 py-0.5 rounded">
-                                                {product.category}
-                                            </span>
-                                        )}
+                                        <div className="font-semibold text-secondary-900">{product.title}</div>
+                                        {/* category name requires a join, for now we just show title */}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="text-sm text-secondary-600 max-w-xs truncate">
@@ -70,10 +68,11 @@ export default function AdminProductsPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 font-mono text-sm">
-                                        {product.currency} {product.price} / {product.unit}
+                                        {product.currency} {product.price} / {product.moq_unit}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-secondary-600">
-                                        {product.inventory_count || 0}
+                                        {/* Inventory count not in schema */}
+                                        -
                                     </td>
                                 </tr>
                             ))}

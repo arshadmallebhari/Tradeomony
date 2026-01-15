@@ -7,7 +7,11 @@ import Card from '@/components/ui/Card';
 import Link from 'next/link';
 
 export default function ImporterDashboard() {
-    const [stats, setStats] = useState({
+    const [stats, setStats] = useState<{
+        inquiries: number;
+        saved: number;
+        chats: number;
+    }>({
         inquiries: 0,
         saved: 0,
         chats: 0

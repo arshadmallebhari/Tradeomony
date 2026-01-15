@@ -7,10 +7,8 @@ import Card from '@/components/ui/Card';
 import Link from 'next/link';
 
 export default function ExporterDashboard() {
-    const [user, setUser] = useState<any>(null);
-
     useEffect(() => {
-        supabase.auth.getUser().then(({ data }) => setUser(data.user));
+        supabase.auth.getUser();
     }, []);
 
     return (

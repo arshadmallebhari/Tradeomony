@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import Card from '@/components/ui/Card';
+import Image from 'next/image';
 import Badge from '@/components/ui/Badge';
+import { Database } from '@/types/database';
 
 export const metadata: Metadata = {
     title: 'Trade Insights | Tradeomony',
@@ -11,10 +12,12 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
     const supabase = await createClient();
-    const { data: posts } = await (supabase.from('blogs') as any)
+    const { data: posts } = await supabase
+        .from('blogs')
         .select('*')
         .eq('published', true)
-        .order('published_at', { ascending: false });
+        .order('published_at', { ascending: false })
+        .returns<Database['public']['Tables']['blogs']['Row'][]>();
 
     return (
         <div className="bg-white min-h-screen">
@@ -46,10 +49,11 @@ export default async function BlogPage() {
                                     {/* Image Placeholder */}
                                     <div className="aspect-video bg-secondary-100 relative overflow-hidden">
                                         {post.cover_image ? (
-                                            <img
-                                                src={post.cover_image}
+                                            <Image
+                                                src={post.cover_image!}
                                                 alt={post.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-500/10 to-primary-700/10">

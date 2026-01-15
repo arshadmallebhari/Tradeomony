@@ -3,13 +3,19 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Badge from '@/components/ui/Badge';
 import { Metadata } from 'next';
+import Image from 'next/image';
+import { Database } from '@/types/database';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
     const supabase = await createClient();
-    const { data: post } = await (supabase.from('blogs') as any)
+    const { data } = await supabase
+        .from('blogs')
         .select('title, excerpt')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
+
+    const post = data as Pick<Database['public']['Tables']['blogs']['Row'], 'title' | 'excerpt'> | null;
 
     if (!post) return { title: 'Post Not Found' };
 
@@ -19,13 +25,17 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     const supabase = await createClient();
-    const { data: post } = await (supabase.from('blogs') as any)
+    const { data } = await supabase
+        .from('blogs')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .eq('published', true)
         .single();
+
+    const post = data as Database['public']['Tables']['blogs']['Row'] | null;
 
     if (!post) {
         notFound();
@@ -58,7 +68,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                         <div>
                             <div className="font-bold text-secondary-900">Tradeomony Editorial</div>
                             <div className="text-sm text-secondary-500">
-                                {new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently published'}
                                 <span className="mx-2">•</span>
                                 8 min read
                             </div>
@@ -71,10 +81,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <div className="container-custom max-w-4xl py-12">
                 {post.cover_image && (
                     <div className="aspect-[21/9] rounded-2xl overflow-hidden mb-12 shadow-2xl">
-                        <img
+                        <Image
                             src={post.cover_image}
                             alt={post.title}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
                         />
                     </div>
                 )}

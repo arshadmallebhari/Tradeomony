@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HeroSection() {
@@ -34,7 +35,7 @@ export default function HeroSection() {
                         </h1>
 
                         <p className="text-xl text-secondary-600 mb-8 leading-relaxed">
-                            India's premier B2B marketplace for international trade. Find quality products, verified suppliers, and grow your business globally.
+                            India&apos;s premier B2B marketplace for international trade. Find quality products, verified suppliers, and grow your business globally.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -83,9 +84,11 @@ export default function HeroSection() {
                         <div className="relative image-interactive group">
                             {/* Main Hero Image */}
                             <div className="image-interactive-inner relative z-10 w-full">
-                                <img
+                                <Image
                                     src="/hero-global-trade.png"
                                     alt="Global Trade Logic"
+                                    width={800}
+                                    height={600}
                                     className="w-full h-auto drop-shadow-2xl rounded-xl transition-transform duration-500"
                                 />
                             </div>
@@ -97,10 +100,14 @@ export default function HeroSection() {
                                 className="absolute -top-6 -left-6 bg-white/90 backdrop-blur-md rounded-xl shadow-soft-lg p-4 z-20 border border-white/50"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-success-100 rounded-lg flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-success-600" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
+                                    <div className="w-10 h-10 bg-success-100 rounded-lg flex items-center justify-center relative overflow-hidden">
+                                        <Image
+                                            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80"
+                                            alt="Global Logistics"
+                                            fill
+                                            className="object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/40 to-transparent"></div>
                                     </div>
                                     <div>
                                         <div className="text-xs text-secondary-500 font-medium">Verified</div>

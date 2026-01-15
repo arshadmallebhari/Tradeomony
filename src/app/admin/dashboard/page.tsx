@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/types/database';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
-    const [user, setUser] = useState<any>(null);
+    const [, setUser] = useState<any>(null);
     const [stats, setStats] = useState({
         users: 0,
         exporters: 0,
         pending: 0,
         products: 0 // Replaced "Reported Items" with Products count for now
     });
-    const [pendingProfiles, setPendingProfiles] = useState<any[]>([]);
+    const [pendingProfiles, setPendingProfiles] = useState<Database['public']['Tables']['exporter_profiles']['Row'][]>([]);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -30,9 +31,9 @@ export default function AdminDashboard() {
             ] = await Promise.all([
                 supabase.from('profiles').select('*', { count: 'exact', head: true }),
                 supabase.from('exporter_profiles').select('*', { count: 'exact', head: true }).eq('verified', true),
-                supabase.from('exporter_profiles').select('*', { count: 'exact', head: true }).eq('verified', false), // Assuming false/null means pending or unverified
+                supabase.from('exporter_profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
                 supabase.from('products').select('*', { count: 'exact', head: true }),
-                supabase.from('exporter_profiles').select('*').eq('verified', false).limit(5)
+                supabase.from('exporter_profiles').select('*').eq('verified', false).limit(5).returns<Database['public']['Tables']['exporter_profiles']['Row'][]>()
             ]);
 
             setStats({

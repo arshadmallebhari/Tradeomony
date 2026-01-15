@@ -79,7 +79,7 @@ export default function AboutPage() {
                             <div>
                                 <h3 className="text-3xl font-display font-bold mb-6">Our Mission</h3>
                                 <p className="text-xl text-secondary-300 leading-relaxed">
-                                    "To democratize international trade by removing technical and trust barriers for businesses worldwide."
+                                    &quot;To democratize international trade by removing technical and trust barriers for businesses worldwide.&quot;
                                 </p>
                             </div>
                         </div>

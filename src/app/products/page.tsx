@@ -11,15 +11,16 @@ export const metadata = {
 export default async function ProductsPage({
     searchParams,
 }: {
-    searchParams: { category?: string; query?: string };
+    searchParams: Promise<{ category?: string; query?: string }>;
 }) {
+    const { category, query: searchQuery } = await searchParams;
     const supabase = await createClient();
 
     // Fetch all products/exporter_profiles as our current "listing"
     // In a real app, products would be a separate table, but for now we list the exporter's product summary
     // Limit to 20 for initial load performance
     // Also selecting only needed columns to reduce payload
-    let query = (supabase
+    let supabaseQuery = (supabase
         .from('exporter_profiles')
         .select(`
             id,
@@ -34,13 +35,13 @@ export default async function ProductsPage({
         `)
         .limit(20) as any);
 
-    if (searchParams.category) {
+    if (category) {
         // Simple filter based on products array containing the string
         // Note: This is a placeholder logic for categories
-        query = query.contains('products', [searchParams.category]);
+        supabaseQuery = supabaseQuery.contains('products', [category]);
     }
 
-    const { data: exporters } = await query;
+    const { data: exporters } = await supabaseQuery;
 
     return (
         <div className="bg-secondary-50 min-h-screen pb-24">

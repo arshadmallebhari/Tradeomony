@@ -6,9 +6,15 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import { Database } from '@/types/database';
+
+type InquiryWithRelations = Database['public']['Tables']['inquiries']['Row'] & {
+    product: Pick<Database['public']['Tables']['products']['Row'], 'title' | 'images' | 'price' | 'currency'> | null;
+    exporter: Pick<Database['public']['Tables']['exporter_profiles']['Row'], 'company_name'> | null;
+};
 
 export default function ImporterInquiriesPage() {
-    const [inquiries, setInquiries] = useState<any[]>([]);
+    const [inquiries, setInquiries] = useState<InquiryWithRelations[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -25,7 +31,8 @@ export default function ImporterInquiriesPage() {
                         exporter:exporter_profiles (company_name)
                     `)
                     .eq('importer_id', user.id)
-                    .order('created_at', { ascending: false });
+                    .order('created_at', { ascending: false })
+                    .returns<InquiryWithRelations[]>();
 
                 if (error) throw error;
                 setInquiries(data || []);

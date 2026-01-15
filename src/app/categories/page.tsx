@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import Card from '@/components/ui/Card';
+import { Database } from '@/types/database';
 
 export const metadata: Metadata = {
     title: 'Product Categories | Tradeomony',
@@ -10,9 +11,11 @@ export const metadata: Metadata = {
 
 export default async function CategoriesPage() {
     const supabase = await createClient();
-    const { data: categories } = await (supabase.from('categories') as any)
+    const { data: categories } = await supabase
+        .from('categories')
         .select('*')
-        .order('name');
+        .order('name')
+        .returns<Database['public']['Tables']['categories']['Row'][]>();
 
     return (
         <div className="bg-secondary-50 min-h-screen">
@@ -34,7 +37,7 @@ export default async function CategoriesPage() {
             <section className="py-16 md:py-24">
                 <div className="container-custom">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {categories?.map((category: any) => (
+                        {categories?.map((category) => (
                             <Link key={category.id} href={`/products?category=${category.slug}`}>
                                 <Card className="group p-8 h-full hover:border-primary-500 transition-all duration-300">
                                     <div className="flex items-start gap-4">
@@ -70,7 +73,7 @@ export default async function CategoriesPage() {
             <section className="bg-white py-16 border-t border-secondary-200">
                 <div className="container-custom text-center">
                     <h2 className="text-3xl font-display font-bold text-secondary-900 mb-4">
-                        Don't see what you're looking for?
+                        Don&apos;t see what you&apos;re looking for?
                     </h2>
                     <p className="text-secondary-600 mb-8 max-w-2xl mx-auto">
                         Our sourcing experts can help you find the right supplier for your specific needs.
