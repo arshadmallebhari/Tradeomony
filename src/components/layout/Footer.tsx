@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Logo from '@/components/ui/Logo';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -9,11 +10,10 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand */}
                     <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-xl">T</span>
+                        <div className="flex items-center mb-6">
+                            <div className="bg-white p-2 rounded-xl inline-flex">
+                                <Logo className="h-12 w-auto text-secondary-900" />
                             </div>
-                            <span className="font-display font-bold text-xl">Tradeomony</span>
                         </div>
                         <p className="text-secondary-400 text-sm leading-relaxed">
                             Connecting verified exporters and importers across India. Your trusted partner in international trade.

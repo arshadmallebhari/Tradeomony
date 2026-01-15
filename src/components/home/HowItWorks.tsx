@@ -8,8 +8,9 @@ const steps = [
         number: '01',
         title: 'Create Your Account',
         description: 'Sign up as an exporter or importer in minutes. Complete your business profile with company details and certifications.',
+        image: '/step-create-account.png',
         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
         ),
@@ -18,8 +19,9 @@ const steps = [
         number: '02',
         title: 'Browse or List Products',
         description: 'Importers can search thousands of products. Exporters can showcase their catalog with detailed descriptions and images.',
+        image: '/step-browse-products.png',
         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
         ),
@@ -28,8 +30,9 @@ const steps = [
         number: '03',
         title: 'Connect & Trade',
         description: 'Send inquiries, negotiate directly with suppliers, and close deals securely through our trusted platform.',
+        image: '/step-connect-trade.png',
         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
         ),
@@ -38,61 +41,76 @@ const steps = [
 
 export default function HowItWorks() {
     return (
-        <section className="section bg-white">
-            <div className="container-custom">
+        <section className="section bg-secondary-50 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }}></div>
+            </div>
+
+            <div className="container-custom relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
-                    className="text-center mb-16"
+                    className="text-center mb-20"
                 >
-                    <h2 className="text-4xl font-display font-bold text-secondary-900 mb-4">
+                    <span className="text-primary-600 font-semibold tracking-wider uppercase text-sm mb-3 block">Process</span>
+                    <h2 className="text-4xl md:text-5xl font-display font-bold text-secondary-900 mb-6">
                         How It Works
                     </h2>
-                    <p className="text-xl text-secondary-600 max-w-2xl mx-auto">
-                        Start trading globally in three simple steps
+                    <p className="text-xl text-secondary-600 max-w-2xl mx-auto leading-relaxed">
+                        Start trading globally in three simple steps with our secure and transparent platform.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                    {/* Connection Lines (Desktop) */}
-                    <div className="hidden md:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-200 via-primary-300 to-primary-200 -z-10"
-                        style={{ width: 'calc(100% - 200px)', left: '100px' }}
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
+                    {/* Connecting Line (Desktop) - Animated */}
+                    <svg className="hidden lg:block absolute top-[160px] left-0 w-full h-20 -z-10 text-primary-200" preserveAspectRatio="none">
+                        <path d="M100,10 C250,10 250,10 400,10 S550,10 700,10" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6" />
+                    </svg>
 
                     {steps.map((step, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.2 }}
-                            className="relative"
+                            transition={{ duration: 0.6, delay: index * 0.2 }}
+                            className="relative group"
                         >
-                            <Card className="p-8 text-center h-full">
-                                {/* Step Number Circle */}
-                                <div className="relative inline-flex items-center justify-center mb-6">
-                                    <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center shadow-glow">
-                                        <span className="text-2xl font-bold text-white">{step.number}</span>
+                            <div className="relative z-10">
+                                {/* Image Container with Interactive Effect */}
+                                <div className="image-interactive mb-8 rounded-2xl bg-white shadow-soft-lg p-3 ring-1 ring-secondary-100">
+                                    <div className="image-interactive-inner rounded-xl overflow-hidden bg-secondary-50 aspect-[4/3] relative">
+                                        <img
+                                            src={step.image}
+                                            alt={step.title}
+                                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                        />
+
+                                        {/* Floating Badge */}
+                                        <div className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center shadow-sm text-primary-600">
+                                            {step.icon}
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Icon */}
-                                <div className="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 mx-auto mb-4">
-                                    {step.icon}
+                                {/* Content */}
+                                <div className="text-center px-4">
+                                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary-100 text-primary-700 font-bold mb-4 ring-4 ring-white">
+                                        {step.number}
+                                    </div>
+                                    <h3 className="font-display font-bold text-2xl text-secondary-900 mb-3 group-hover:text-primary-600 transition-colors">
+                                        {step.title}
+                                    </h3>
+                                    <p className="text-secondary-600 leading-relaxed">
+                                        {step.description}
+                                    </p>
                                 </div>
-
-                                {/* Title */}
-                                <h3 className="font-semibold text-xl text-secondary-900 mb-3">
-                                    {step.title}
-                                </h3>
-
-                                {/* Description */}
-                                <p className="text-secondary-600 leading-relaxed">
-                                    {step.description}
-                                </p>
-                            </Card>
+                            </div>
                         </motion.div>
                     ))}
                 </div>

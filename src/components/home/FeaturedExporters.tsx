@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Link from 'next/link';
+import Image from 'next/image'; // Import Next.js Image
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 
@@ -15,9 +16,10 @@ export default function FeaturedExporters() {
         const fetchFeaturedExporters = async () => {
             try {
                 // Fetch latest 4 exporters as "featured" for now
+                // Optimize: Select only necessary columns
                 const { data, error } = await supabase
                     .from('exporter_profiles')
-                    .select('*')
+                    .select('id, company_name, city, country, product_images, description, verified')
                     .eq('verified', true) // Only show verified as featured
                     .order('created_at', { ascending: false })
                     .limit(4);
@@ -74,9 +76,15 @@ export default function FeaturedExporters() {
                                 <Card hover className="h-full">
                                     <div className="p-6 h-full flex flex-col">
                                         {/* Icon/Image */}
-                                        <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl flex items-center justify-center text-4xl mb-4 self-start">
+                                        <div className="relative w-full aspect-video mb-4 rounded-xl overflow-hidden bg-secondary-100 flex items-center justify-center text-4xl">
                                             {exporter.product_images?.[0] ? (
-                                                <img src={exporter.product_images[0]} alt={exporter.company_name} className="w-full h-full object-cover rounded-xl" />
+                                                <Image
+                                                    src={exporter.product_images[0]}
+                                                    alt={exporter.company_name}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                                                />
                                             ) : (
                                                 '🏭'
                                             )}

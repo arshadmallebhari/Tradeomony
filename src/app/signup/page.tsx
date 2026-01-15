@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import Logo from '@/components/ui/Logo';
 import Card from '@/components/ui/Card';
 
 type UserRole = 'exporter' | 'importer';
@@ -98,10 +99,8 @@ export default function SignupPage() {
             >
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center gap-2 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-2xl">T</span>
-                        </div>
-                        <span className="font-display font-bold text-2xl text-secondary-900">Tradeomony</span>
+
+                        <Logo className="h-12 w-auto" />
                     </Link>
                     <h1 className="text-3xl font-display font-bold text-secondary-900 mb-2">
                         Create Your Account

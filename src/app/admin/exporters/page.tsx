@@ -19,7 +19,8 @@ export default function AdminExportersPage() {
         try {
             const { data, error } = await (supabase
                 .from('exporter_profiles') as any)
-                .select('*')
+                .select('id, company_name, user_id, city, country, products, verified, created_at')
+                .eq('verified', true)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -31,7 +32,7 @@ export default function AdminExportersPage() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center">Loading exporters...</div>;
+    if (loading) return <div className="p-8 text-center">Loading verified exporters...</div>;
 
     return (
         <div className="container-custom py-8">
@@ -39,7 +40,7 @@ export default function AdminExportersPage() {
                 <Link href="/admin/dashboard" className="text-secondary-500 hover:text-secondary-900">
                     ← Back to Dashboard
                 </Link>
-                <h1 className="text-3xl font-display font-bold text-secondary-900">Exporters</h1>
+                <h1 className="text-3xl font-display font-bold text-secondary-900">Verified Exporters</h1>
             </div>
 
             <Card className="p-0 overflow-hidden">

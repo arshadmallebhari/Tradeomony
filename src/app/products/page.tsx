@@ -17,12 +17,22 @@ export default async function ProductsPage({
 
     // Fetch all products/exporter_profiles as our current "listing"
     // In a real app, products would be a separate table, but for now we list the exporter's product summary
+    // Limit to 20 for initial load performance
+    // Also selecting only needed columns to reduce payload
     let query = (supabase
         .from('exporter_profiles')
         .select(`
-            *,
+            id,
+            company_name,
+            city,
+            country,
+            products,
+            verified,
+            moq,
+            moq_unit,
             profiles:user_id (status)
-        `) as any);
+        `)
+        .limit(20) as any);
 
     if (searchParams.category) {
         // Simple filter based on products array containing the string

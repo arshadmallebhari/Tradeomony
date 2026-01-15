@@ -56,28 +56,71 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <Link href="/admin/users" className="block transition-transform hover:-translate-y-1">
-                    <Card className="p-6 border-l-4 border-primary-600 h-full cursor-pointer hover:shadow-md">
-                        <h3 className="text-sm font-medium text-secondary-500">Total Users</h3>
-                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.users}</p>
+                {/* Total Users */}
+                <Link href="/admin/users" className="block group">
+                    <Card className="p-6 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg group-hover:border-primary-200 border border-transparent">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h3 className="text-sm font-medium text-secondary-500 mb-1">Total Users</h3>
+                                <p className="text-3xl font-display font-bold text-secondary-900">{stats.users}</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                        </div>
                     </Card>
                 </Link>
-                <Link href="/admin/exporters" className="block transition-transform hover:-translate-y-1">
-                    <Card className="p-6 border-l-4 border-success-600 h-full cursor-pointer hover:shadow-md">
-                        <h3 className="text-sm font-medium text-secondary-500">Verified Exporters</h3>
-                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.exporters}</p>
+
+                {/* Verified Exporters */}
+                <Link href="/admin/exporters" className="block group">
+                    <Card className="p-6 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg group-hover:border-success-200 border border-transparent">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h3 className="text-sm font-medium text-secondary-500 mb-1">Verified Exporters</h3>
+                                <p className="text-3xl font-display font-bold text-secondary-900">{stats.exporters}</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-lg bg-success-50 flex items-center justify-center text-success-600">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
                     </Card>
                 </Link>
-                <Link href="/admin/verification" className="block transition-transform hover:-translate-y-1">
-                    <Card className="p-6 border-l-4 border-accent-600 h-full cursor-pointer hover:shadow-md">
-                        <h3 className="text-sm font-medium text-secondary-500">Pending Verifications</h3>
-                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.pending}</p>
+
+                {/* Pending Verifications */}
+                <Link href="/admin/verification" className="block group">
+                    <Card className="p-6 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg group-hover:border-accent-200 border border-transparent">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h3 className="text-sm font-medium text-secondary-500 mb-1">Pending Requests</h3>
+                                <p className="text-3xl font-display font-bold text-secondary-900">{stats.pending}</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-lg bg-accent-50 flex items-center justify-center text-accent-600">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
                     </Card>
                 </Link>
-                <Link href="/admin/products" className="block transition-transform hover:-translate-y-1">
-                    <Card className="p-6 border-l-4 border-danger-600 h-full cursor-pointer hover:shadow-md">
-                        <h3 className="text-sm font-medium text-secondary-500">Active Products</h3>
-                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.products}</p>
+
+                {/* Active Products */}
+                <Link href="/admin/products" className="block group">
+                    <Card className="p-6 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg group-hover:border-blue-200 border border-transparent">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h3 className="text-sm font-medium text-secondary-500 mb-1">Active Products</h3>
+                                <p className="text-3xl font-display font-bold text-secondary-900">{stats.products}</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            </div>
+                        </div>
                     </Card>
                 </Link>
             </div>
