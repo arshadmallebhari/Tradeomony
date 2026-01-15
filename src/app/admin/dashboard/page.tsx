@@ -18,6 +18,8 @@ export default function AdminDashboard() {
     const [pendingProfiles, setPendingProfiles] = useState<Database['public']['Tables']['exporter_profiles']['Row'][]>([]);
 
     useEffect(() => {
+        if (!supabase) return;
+        
         supabase.auth.getUser().then(({ data }) => setUser(data.user));
 
         const fetchDashboardData = async () => {
@@ -53,7 +55,7 @@ export default function AdminDashboard() {
         <div className="container-custom py-8">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-display font-bold text-secondary-900">Admin Dashboard</h1>
-                <Button variant="outline" onClick={() => supabase.auth.signOut()}>Sign Out</Button>
+                <Button variant="outline" onClick={() => supabase?.auth.signOut()}>Sign Out</Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
