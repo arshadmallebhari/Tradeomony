@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter, usePathname } from 'next/navigation';
+
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
@@ -8,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 
 export default function Header() {
+    const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,19 +77,21 @@ export default function Header() {
                     {/* Auth Buttons */}
                     <div className="hidden md:flex items-center gap-4">
                         {isLoading ? (
-                            // Loading skeleton can be added here if needed, or just nothing
                             <div className="w-20 h-9 bg-secondary-100 rounded-xl animate-pulse" />
                         ) : user ? (
-                            <>
-                                <Link href="/dashboard">
-                                    <Button variant="ghost" size="sm">
-                                        Dashboard
+                            // Hide buttons if already on dashboard pages to avoid redundancy
+                            !pathname?.startsWith('/dashboard') && !pathname?.startsWith('/admin') ? (
+                                <>
+                                    <Link href="/dashboard">
+                                        <Button variant="ghost" size="sm">
+                                            Dashboard
+                                        </Button>
+                                    </Link>
+                                    <Button variant="outline" size="sm" onClick={handleSignOut}>
+                                        Sign Out
                                     </Button>
-                                </Link>
-                                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                                    Sign Out
-                                </Button>
-                            </>
+                                </>
+                            ) : null
                         ) : (
                             <>
                                 <Link href="/login">
@@ -143,16 +148,19 @@ export default function Header() {
                                 </Link>
                                 <div className="flex flex-col gap-2 pt-4 border-t border-secondary-200">
                                     {user ? (
-                                        <>
-                                            <Link href="/dashboard">
-                                                <Button variant="ghost" size="sm" className="w-full">
-                                                    Dashboard
+                                        // Hide buttons if already on dashboard pages
+                                        !pathname?.startsWith('/dashboard') && !pathname?.startsWith('/admin') ? (
+                                            <>
+                                                <Link href="/dashboard">
+                                                    <Button variant="ghost" size="sm" className="w-full">
+                                                        Dashboard
+                                                    </Button>
+                                                </Link>
+                                                <Button variant="outline" size="sm" className="w-full" onClick={handleSignOut}>
+                                                    Sign Out
                                                 </Button>
-                                            </Link>
-                                            <Button variant="outline" size="sm" className="w-full" onClick={handleSignOut}>
-                                                Sign Out
-                                            </Button>
-                                        </>
+                                            </>
+                                        ) : null
                                     ) : (
                                         <>
                                             <Link href="/login">
