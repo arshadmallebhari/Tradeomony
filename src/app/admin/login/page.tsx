@@ -24,12 +24,6 @@ export default function AdminLoginPage() {
         setIsLoading(true);
         setError('');
 
-        if (!supabase) {
-            setError('Application not properly configured');
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const { data, error: authError } = await supabase.auth.signInWithPassword({
                 email,
