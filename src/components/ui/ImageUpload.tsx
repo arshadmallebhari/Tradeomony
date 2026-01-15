@@ -2,7 +2,6 @@
 
 import { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@/components/ui/Button';
 
 interface ImageUploadProps {
     maxImages?: number;

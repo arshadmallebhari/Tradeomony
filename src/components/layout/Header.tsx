@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -12,7 +13,7 @@ import { supabase } from '@/lib/supabase/client';
 export default function Header() {
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -67,6 +68,9 @@ export default function Header() {
                         </Link>
                         <Link href="/blog" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium">
                             Insights
+                        </Link>
+                        <Link href="/guidance" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium">
+                            Trade Guidance
                         </Link>
                         <Link href="/about" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium">
                             About
@@ -142,6 +146,9 @@ export default function Header() {
                                 </Link>
                                 <Link href="/blog" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium py-2">
                                     Insights
+                                </Link>
+                                <Link href="/guidance" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium py-2">
+                                    Trade Guidance
                                 </Link>
                                 <Link href="/about" className="text-secondary-700 hover:text-primary-600 transition-colors font-medium py-2">
                                     About

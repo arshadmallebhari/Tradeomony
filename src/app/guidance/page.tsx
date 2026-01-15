@@ -59,7 +59,7 @@ export default function GuidancePage() {
                         </p>
                         <div className="inline-flex gap-4">
                             <Link href="/guidance/exporter-101">
-                                <Button variant="primary" className="bg-white text-primary-700 hover:bg-primary-50 border-none">
+                                <Button variant="primary" className="bg-white text-primary-600 hover:bg-primary-50 border-none">
                                     Start Exporter 101
                                 </Button>
                             </Link>
