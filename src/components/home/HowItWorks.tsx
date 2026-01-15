@@ -90,9 +90,10 @@ export default function HowItWorks() {
                                             alt={step.title}
                                             fill
                                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                            quality={90}
                                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 bg-primary-600/10 backdrop-blur-[2px]"></div>
+                                        <div className="absolute inset-0 bg-primary-600/5"></div>
 
                                         {/* Floating Badge */}
                                         <div className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center shadow-sm text-primary-600">
