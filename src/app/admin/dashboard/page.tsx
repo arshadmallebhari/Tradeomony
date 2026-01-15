@@ -23,6 +23,8 @@ export default function AdminDashboard() {
         supabase.auth.getUser().then(({ data }) => setUser(data.user));
 
         const fetchDashboardData = async () => {
+            if (!supabase) return;
+            
             // Parallel fetch for stats
             const [
                 { count: userCount },
