@@ -56,22 +56,30 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <Card className="p-6 border-l-4 border-primary-600">
-                    <h3 className="text-sm font-medium text-secondary-500">Total Users</h3>
-                    <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.users}</p>
-                </Card>
-                <Card className="p-6 border-l-4 border-success-600">
-                    <h3 className="text-sm font-medium text-secondary-500">Verified Exporters</h3>
-                    <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.exporters}</p>
-                </Card>
-                <Card className="p-6 border-l-4 border-accent-600">
-                    <h3 className="text-sm font-medium text-secondary-500">Pending Verifications</h3>
-                    <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.pending}</p>
-                </Card>
-                <Card className="p-6 border-l-4 border-danger-600">
-                    <h3 className="text-sm font-medium text-secondary-500">Active Products</h3>
-                    <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.products}</p>
-                </Card>
+                <Link href="/admin/users" className="block transition-transform hover:-translate-y-1">
+                    <Card className="p-6 border-l-4 border-primary-600 h-full cursor-pointer hover:shadow-md">
+                        <h3 className="text-sm font-medium text-secondary-500">Total Users</h3>
+                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.users}</p>
+                    </Card>
+                </Link>
+                <Link href="/admin/exporters" className="block transition-transform hover:-translate-y-1">
+                    <Card className="p-6 border-l-4 border-success-600 h-full cursor-pointer hover:shadow-md">
+                        <h3 className="text-sm font-medium text-secondary-500">Verified Exporters</h3>
+                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.exporters}</p>
+                    </Card>
+                </Link>
+                <Link href="/admin/verification" className="block transition-transform hover:-translate-y-1">
+                    <Card className="p-6 border-l-4 border-accent-600 h-full cursor-pointer hover:shadow-md">
+                        <h3 className="text-sm font-medium text-secondary-500">Pending Verifications</h3>
+                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.pending}</p>
+                    </Card>
+                </Link>
+                <Link href="/admin/products" className="block transition-transform hover:-translate-y-1">
+                    <Card className="p-6 border-l-4 border-danger-600 h-full cursor-pointer hover:shadow-md">
+                        <h3 className="text-sm font-medium text-secondary-500">Active Products</h3>
+                        <p className="text-2xl font-bold text-secondary-900 mt-1">{stats.products}</p>
+                    </Card>
+                </Link>
             </div>
 
             <h2 className="text-xl font-semibold mb-4">Pending Verifications</h2>
