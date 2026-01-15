@@ -89,6 +89,7 @@ export default function HowItWorks() {
                                             src={step.image}
                                             alt={step.title}
                                             fill
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 bg-primary-600/10 backdrop-blur-[2px]"></div>

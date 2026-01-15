@@ -89,6 +89,8 @@ export default function HeroSection() {
                                     alt="Global Trade Logic"
                                     width={800}
                                     height={600}
+                                    priority
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                                     className="w-full h-auto drop-shadow-2xl rounded-xl transition-transform duration-500"
                                 />
                             </div>
@@ -105,6 +107,7 @@ export default function HeroSection() {
                                             src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80"
                                             alt="Global Logistics"
                                             fill
+                                            sizes="40px"
                                             className="object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/40 to-transparent"></div>
