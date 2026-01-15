@@ -5,16 +5,11 @@ import type { Database } from '@/types/database';
 export async function createClient() {
     const cookieStore = await cookies();
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-        console.warn('Supabase environment variables are missing during createClient call');
-        return createServerClient<Database>(
-            'https://placeholder.supabase.co',
-            'placeholder',
-            { cookies: { get: () => undefined } }
-        );
+        throw new Error('Missing Supabase environment variables');
     }
 
     return createServerClient<Database>(
