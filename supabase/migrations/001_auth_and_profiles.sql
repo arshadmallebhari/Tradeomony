@@ -58,6 +58,10 @@ ALTER TABLE exporter_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE importer_profiles ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
+CREATE POLICY "System can create profiles for new users"
+  ON profiles FOR INSERT
+  WITH CHECK (true);
+
 CREATE POLICY "Users can view their own profile"
   ON profiles FOR SELECT
   USING (auth.uid() = id);

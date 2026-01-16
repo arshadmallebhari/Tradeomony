@@ -31,12 +31,23 @@ export default function LoginPage() {
 
             if (error) throw error;
 
+            if (!authData.user) {
+                throw new Error('No user data returned from authentication');
+            }
+
             // Check user role and redirect
-            const { data: profileResponse } = await supabase
+            const { data: profileResponse, error: profileError } = await supabase
                 .from('profiles')
                 .select('role, onboarding_completed')
                 .eq('id', authData.user.id)
                 .single();
+
+            if (profileError) {
+                console.error('Profile fetch error:', profileError);
+                // Even if profile fetch fails, redirect to onboarding to create it
+                router.push('/onboarding');
+                return;
+            }
 
             const profile = profileResponse as { role: string; onboarding_completed: boolean } | null;
 
@@ -50,6 +61,7 @@ export default function LoginPage() {
                 router.push('/dashboard/importer');
             }
         } catch (error: any) {
+            console.error('Login error:', error);
             setError(error.message || 'Failed to login');
         } finally {
             setIsLoading(false);
@@ -68,8 +80,12 @@ export default function LoginPage() {
                 },
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Google OAuth error:', error);
+                throw error;
+            }
         } catch (error: any) {
+            console.error('Login error:', error);
             setError(error.message || 'Failed to login with Google');
             setIsLoading(false);
         }

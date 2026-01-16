@@ -7,13 +7,24 @@ export async function GET(request: Request) {
     const roleParam = requestUrl.searchParams.get('role');
     const redirectUrl = new URL('/onboarding', requestUrl.origin);
 
-    if (code) {
-        const supabase = await createClient();
-        const { error, data } = await supabase.auth.exchangeCodeForSession(code);
-        
-        if (!error && data.user) {
+    try {
+        if (code) {
+            const supabase = await createClient();
+            const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+            
+            if (error) {
+                console.error('Auth callback error:', error);
+                // Still redirect even on error, let the client handle it
+                return NextResponse.redirect(redirectUrl);
+            }
+
+            if (!data.user) {
+                console.error('No user data in callback');
+                return NextResponse.redirect(redirectUrl);
+            }
+
             // Check if profile exists, create if needed for OAuth users
-            const { data: existingProfile } = await supabase
+            const { data: existingProfile, error: selectError } = await supabase
                 .from('profiles')
                 .select('id')
                 .eq('id', data.user.id)
@@ -25,13 +36,17 @@ export async function GET(request: Request) {
                 
                 // Create profile for OAuth users
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                await (supabase as any)
+                const { error: insertError } = await (supabase as any)
                     .from('profiles')
                     .insert({
                         id: data.user.id,
                         email: data.user.email || '',
                         role: userRole,
                     });
+
+                if (insertError) {
+                    console.error('Failed to create profile:', insertError);
+                }
             } else if (roleParam) {
                 // Update role if it was passed as URL parameter
                 const userRole = roleParam as 'exporter' | 'importer' | 'admin';
@@ -42,6 +57,8 @@ export async function GET(request: Request) {
                     .eq('id', data.user.id);
             }
         }
+    } catch (error) {
+        console.error('Unexpected error in auth callback:', error);
     }
 
     // URL to redirect to after sign in process completes
