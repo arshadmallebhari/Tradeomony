@@ -19,7 +19,6 @@ export default async function ProductsPage({
     // Fetch all products/exporter_profiles as our current "listing"
     // In a real app, products would be a separate table, but for now we list the exporter's product summary
     // Limit to 20 for initial load performance
-    // Also selecting only needed columns to reduce payload
     let supabaseQuery = (supabase
         .from('exporter_profiles')
         .select(`
@@ -30,9 +29,9 @@ export default async function ProductsPage({
             products,
             verified,
             moq,
-            moq_unit,
-            profiles:user_id (status)
+            moq_unit
         `)
+        .eq('verified', true)
         .limit(20) as any);
 
     if (category) {
@@ -41,7 +40,11 @@ export default async function ProductsPage({
         supabaseQuery = supabaseQuery.contains('products', [category]);
     }
 
-    const { data: exporters } = await supabaseQuery;
+    const { data: exporters, error } = await supabaseQuery;
+    
+    if (error) {
+        console.error('Products fetch error:', error);
+    }
 
     return (
         <div className="bg-secondary-50 min-h-screen pb-24">
