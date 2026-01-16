@@ -73,9 +73,29 @@ export default function ImporterOnboarding() {
                 website: formData.website || null,
             };
 
-            const { error: profileError } = await (supabase
+            // Check if importer profile already exists
+            const { data: existingProfile, error: checkError } = await (supabase
                 .from('importer_profiles') as any)
-                .insert(profileData);
+                .select('id')
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            let profileError;
+            
+            if (existingProfile) {
+                // Update existing profile
+                const { error } = await (supabase
+                    .from('importer_profiles') as any)
+                    .update(profileData)
+                    .eq('user_id', user.id);
+                profileError = error;
+            } else {
+                // Create new profile
+                const { error } = await (supabase
+                    .from('importer_profiles') as any)
+                    .insert(profileData);
+                profileError = error;
+            }
 
             if (profileError) throw profileError;
 
