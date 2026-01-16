@@ -48,19 +48,22 @@ export default function LoginPage() {
                     if (isMounted) {
                         const profile = profileData as { role: string; onboarding_completed: boolean } | null;
 
+                        let redirectPath = '/dashboard/importer';
                         if (profile?.role === 'admin') {
                             console.log('Redirecting to admin dashboard');
-                            router.push('/admin/dashboard');
+                            redirectPath = '/admin/dashboard';
                         } else if (!profile?.onboarding_completed) {
                             console.log('Redirecting to onboarding');
-                            router.push('/onboarding');
+                            redirectPath = '/onboarding';
                         } else if (profile?.role === 'exporter') {
                             console.log('Redirecting to exporter dashboard');
-                            router.push('/dashboard/exporter');
+                            redirectPath = '/dashboard/exporter';
                         } else {
                             console.log('Redirecting to importer dashboard');
-                            router.push('/dashboard/importer');
                         }
+                        
+                        console.log('User already authenticated, redirecting to:', redirectPath);
+                        window.location.href = redirectPath;
                     }
                     return;
                 }
