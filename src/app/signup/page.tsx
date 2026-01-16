@@ -44,21 +44,33 @@ export default function SignupPage() {
         setError('');
 
         try {
-            const { error } = await supabase.auth.signUp({
+            console.log('Starting email signup with role:', role);
+            
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
                         role: role,
                     },
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
                 },
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Signup error:', error);
+                throw error;
+            }
+
+            console.log('Signup successful:', data.user?.id);
+            
+            // Wait for trigger to create profile
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             // Redirect to onboarding
             router.push('/onboarding');
         } catch (error: any) {
+            console.error('Signup error:', error);
             setError(error.message || 'Failed to create account');
         } finally {
             setIsLoading(false);

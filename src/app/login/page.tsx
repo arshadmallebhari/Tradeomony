@@ -24,45 +24,76 @@ export default function LoginPage() {
         setError('');
 
         try {
-            const { data: authData, error } = await supabase.auth.signInWithPassword({
+            console.log('Starting email login...');
+            
+            const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
-            if (error) throw error;
-
-            if (!authData.user) {
-                throw new Error('No user data returned from authentication');
+            if (authError) {
+                console.error('Auth error:', authError);
+                throw authError;
             }
 
-            // Check user role and redirect
-            const { data: profileResponse, error: profileError } = await supabase
+            if (!authData.user) {
+                throw new Error('No user returned from authentication');
+            }
+
+            console.log('User authenticated:', authData.user.id);
+
+            // Wait a moment for profile to be created by trigger
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Try to fetch profile
+            const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
                 .select('role, onboarding_completed')
                 .eq('id', authData.user.id)
-                .single();
+                .maybeSingle();
 
-            if (profileError) {
-                console.error('Profile fetch error:', profileError);
-                // Even if profile fetch fails, redirect to onboarding to create it
+            console.log('Profile data:', profileData, 'Error:', profileError);
+
+            // If profile doesn't exist, create it
+            if (!profileData) {
+                console.log('Profile not found, creating one...');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const { error: insertError } = await (supabase as any)
+                    .from('profiles')
+                    .insert({
+                        id: authData.user.id,
+                        email: authData.user.email || email,
+                        role: 'importer', // default role
+                    });
+
+                if (insertError) {
+                    console.error('Error creating profile:', insertError);
+                }
+                
+                // Redirect to onboarding to complete setup
                 router.push('/onboarding');
                 return;
             }
 
-            const profile = profileResponse as { role: string; onboarding_completed: boolean } | null;
+            // Profile exists, redirect based on role
+            const profile = profileData as { role: string; onboarding_completed: boolean } | null;
 
             if (profile?.role === 'admin') {
+                console.log('Redirecting to admin dashboard');
                 router.push('/admin/dashboard');
             } else if (!profile?.onboarding_completed) {
+                console.log('Redirecting to onboarding');
                 router.push('/onboarding');
             } else if (profile?.role === 'exporter') {
+                console.log('Redirecting to exporter dashboard');
                 router.push('/dashboard/exporter');
             } else {
+                console.log('Redirecting to importer dashboard');
                 router.push('/dashboard/importer');
             }
         } catch (error: any) {
             console.error('Login error:', error);
-            setError(error.message || 'Failed to login');
+            setError(error.message || 'Failed to login. Please try again.');
         } finally {
             setIsLoading(false);
         }

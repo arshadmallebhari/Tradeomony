@@ -10,14 +10,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
     hasUrl: !!supabaseUrl,
     hasKey: !!supabaseAnonKey
   });
+  throw new Error('Supabase configuration is missing. Check your .env.local file.');
 }
 
-const client = (supabaseUrl && supabaseAnonKey)
-  ? createClient<Database>(supabaseUrl, supabaseAnonKey)
-  : null;
-
-if (!client) {
-  throw new Error('Supabase client is not initialized. Check your environment variables.');
-}
+const client = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+});
 
 export const supabase = client as SupabaseClient<Database>;
+
