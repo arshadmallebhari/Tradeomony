@@ -127,29 +127,37 @@ export default function LoginPage() {
                 throw new Error('Invalid credentials');
             }
 
-            // Profile exists, redirect based on role
+            // Profile exists, determine redirect path
             const profile = profileData as { role: string; onboarding_completed: boolean } | null;
-
-            // Refresh router to re-evaluate server components with new auth state
-            router.refresh();
+            let redirectPath = '/dashboard/importer'; // default
 
             if (profile?.role === 'admin') {
-                console.log('Redirecting to admin dashboard');
-                router.push('/admin/dashboard');
+                console.log('Admin user - redirecting to admin dashboard');
+                redirectPath = '/admin/dashboard';
             } else if (!profile?.onboarding_completed) {
-                console.log('Redirecting to onboarding');
-                router.push('/onboarding');
+                console.log('User not onboarded - redirecting to onboarding');
+                redirectPath = '/onboarding';
             } else if (profile?.role === 'exporter') {
-                console.log('Redirecting to exporter dashboard');
-                router.push('/dashboard/exporter');
+                console.log('Exporter user - redirecting to exporter dashboard');
+                redirectPath = '/dashboard/exporter';
             } else {
-                console.log('Redirecting to importer dashboard');
-                router.push('/dashboard/importer');
+                console.log('Importer user - redirecting to importer dashboard');
             }
+
+            console.log('Refreshing router and redirecting to:', redirectPath);
+            
+            // Refresh router first to re-evaluate server components
+            router.refresh();
+            
+            // Wait a moment for refresh, then navigate
+            setTimeout(() => {
+                router.push(redirectPath);
+            }, 300);
+            
+            // Don't set loading to false here - let it stay true during navigation
         } catch (error: any) {
             console.error('Login error:', error);
             setError(error.message || 'Failed to login. Please try again.');
-        } finally {
             setIsLoading(false);
         }
     };
