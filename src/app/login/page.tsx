@@ -27,10 +27,25 @@ export default function LoginPage() {
         const checkAuth = async () => {
             try {
                 console.log('Checking authentication status...');
-                const { data: { session } } = await supabase.auth.getSession();
                 
-                if (session?.user && !hasRedirected) {
+                // Get current session from Supabase
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                if (sessionError) {
+                    console.error('Session error:', sessionError);
+                    setIsCheckingAuth(false);
+                    return;
+                }
+                
+                console.log('Session:', session);
+                
+                if (session?.user) {
                     console.log('User already logged in:', session.user.id);
+                    if (hasRedirected) {
+                        console.log('Already redirected, skipping...');
+                        return;
+                    }
+                    
                     setHasRedirected(true);
                     
                     // User is logged in, check their profile and redirect
@@ -41,13 +56,16 @@ export default function LoginPage() {
                         .eq('id', session.user.id)
                         .maybeSingle();
 
-                    console.log('Profile data:', profileData);
-
-                    if (profileError) {
-                        console.error('Profile fetch error:', profileError);
-                    }
+                    console.log('Profile data:', profileData, 'Profile error:', profileError);
 
                     if (isMounted) {
+                        if (!profileData) {
+                            console.log('No profile found, showing login form');
+                            setIsCheckingAuth(false);
+                            setHasRedirected(false);
+                            return;
+                        }
+
                         const profile = profileData as { role: string; onboarding_completed: boolean } | null;
 
                         let redirectPath = '/dashboard/importer';
@@ -71,9 +89,11 @@ export default function LoginPage() {
                 }
                 
                 console.log('No session found, showing login form');
+                if (isMounted) {
+                    setIsCheckingAuth(false);
+                }
             } catch (err) {
                 console.error('Auth check error:', err);
-            } finally {
                 if (isMounted) {
                     setIsCheckingAuth(false);
                 }
@@ -86,7 +106,7 @@ export default function LoginPage() {
         return () => {
             isMounted = false;
         };
-    }, [hasRedirected]);
+    }, []);
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         if (hasRedirected) return; // Prevent multiple submissions
