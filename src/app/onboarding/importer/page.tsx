@@ -79,10 +79,13 @@ export default function ImporterOnboarding() {
 
             if (profileError) throw profileError;
 
-            // Update profile onboarding status
+            // Update profile onboarding status and set to active
             const { error: updateError } = await (supabase
                 .from('profiles') as any)
-                .update({ onboarding_completed: true })
+                .update({ 
+                    onboarding_completed: true,
+                    status: 'active'
+                })
                 .eq('id', user.id);
 
             if (updateError) throw updateError;
