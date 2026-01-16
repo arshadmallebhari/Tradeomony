@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Logo from '@/components/ui/Logo';
@@ -17,6 +17,44 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+    // Check if user is already logged in
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user) {
+                    // User is logged in, check their profile and redirect
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const { data: profileData } = await (supabase as any)
+                        .from('profiles')
+                        .select('role, onboarding_completed')
+                        .eq('id', user.id)
+                        .maybeSingle();
+
+                    const profile = profileData as { role: string; onboarding_completed: boolean } | null;
+
+                    if (profile?.role === 'admin') {
+                        router.push('/admin/dashboard');
+                    } else if (!profile?.onboarding_completed) {
+                        router.push('/onboarding');
+                    } else if (profile?.role === 'exporter') {
+                        router.push('/dashboard/exporter');
+                    } else {
+                        router.push('/dashboard/importer');
+                    }
+                }
+            } catch (err) {
+                console.error('Auth check error:', err);
+            } finally {
+                setIsCheckingAuth(false);
+            }
+        };
+
+        checkAuth();
+    }, [router]);
 
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,6 +162,12 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-accent-50 py-12 px-4">
+            {isCheckingAuth ? (
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <p className="mt-4 text-secondary-600">Loading...</p>
+                </div>
+            ) : (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -227,6 +271,7 @@ export default function LoginPage() {
                     </Link>
                 </div>
             </motion.div>
+            )}
         </div>
     );
 }
