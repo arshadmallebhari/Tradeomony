@@ -21,39 +21,66 @@ export default function LoginPage() {
 
     // Check if user is already logged in
     useEffect(() => {
+        let isMounted = true;
+
         const checkAuth = async () => {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                console.log('Checking authentication status...');
+                const { data: { session } } = await supabase.auth.getSession();
                 
-                if (user) {
+                if (session?.user) {
+                    console.log('User already logged in:', session.user.id);
+                    
                     // User is logged in, check their profile and redirect
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const { data: profileData } = await (supabase as any)
+                    const { data: profileData, error: profileError } = await (supabase as any)
                         .from('profiles')
                         .select('role, onboarding_completed')
-                        .eq('id', user.id)
+                        .eq('id', session.user.id)
                         .maybeSingle();
 
-                    const profile = profileData as { role: string; onboarding_completed: boolean } | null;
+                    console.log('Profile data:', profileData);
 
-                    if (profile?.role === 'admin') {
-                        router.push('/admin/dashboard');
-                    } else if (!profile?.onboarding_completed) {
-                        router.push('/onboarding');
-                    } else if (profile?.role === 'exporter') {
-                        router.push('/dashboard/exporter');
-                    } else {
-                        router.push('/dashboard/importer');
+                    if (profileError) {
+                        console.error('Profile fetch error:', profileError);
                     }
+
+                    if (isMounted) {
+                        const profile = profileData as { role: string; onboarding_completed: boolean } | null;
+
+                        if (profile?.role === 'admin') {
+                            console.log('Redirecting to admin dashboard');
+                            router.push('/admin/dashboard');
+                        } else if (!profile?.onboarding_completed) {
+                            console.log('Redirecting to onboarding');
+                            router.push('/onboarding');
+                        } else if (profile?.role === 'exporter') {
+                            console.log('Redirecting to exporter dashboard');
+                            router.push('/dashboard/exporter');
+                        } else {
+                            console.log('Redirecting to importer dashboard');
+                            router.push('/dashboard/importer');
+                        }
+                    }
+                    return;
                 }
+                
+                console.log('No session found, showing login form');
             } catch (err) {
                 console.error('Auth check error:', err);
             } finally {
-                setIsCheckingAuth(false);
+                if (isMounted) {
+                    setIsCheckingAuth(false);
+                }
             }
         };
 
         checkAuth();
+
+        // Cleanup function
+        return () => {
+            isMounted = false;
+        };
     }, [router]);
 
     const handleEmailLogin = async (e: React.FormEvent) => {
