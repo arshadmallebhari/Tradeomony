@@ -92,25 +92,12 @@ export default function LoginPage() {
 
             console.log('Profile data:', profileData, 'Error:', profileError);
 
-            // If profile doesn't exist, create it
+            // If profile doesn't exist, this is invalid - reject login
             if (!profileData) {
-                console.log('Profile not found, creating one...');
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const { error: insertError } = await (supabase as any)
-                    .from('profiles')
-                    .insert({
-                        id: authData.user.id,
-                        email: authData.user.email || email,
-                        role: 'importer', // default role
-                    });
-
-                if (insertError) {
-                    console.error('Error creating profile:', insertError);
-                }
-                
-                // Redirect to onboarding to complete setup
-                router.push('/onboarding');
-                return;
+                console.log('Profile not found for authenticated user - rejecting login');
+                // Sign out the user
+                await supabase.auth.signOut();
+                throw new Error('Invalid credentials');
             }
 
             // Profile exists, redirect based on role
