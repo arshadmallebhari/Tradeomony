@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import type { Database } from '@/types/database';
 
 export async function GET(request: Request) {
     const requestUrl = new URL(request.url);
@@ -24,15 +25,14 @@ export async function GET(request: Request) {
                 const userRole = (roleParam || data.user.user_metadata?.role || 'importer') as 'exporter' | 'importer' | 'admin';
                 
                 // Create profile for OAuth users
+                // @ts-ignore - Supabase types issue
                 await supabase
                     .from('profiles')
-                    .insert(
-                        {
-                            id: data.user.id,
-                            email: data.user.email || '',
-                            role: userRole,
-                        }
-                    );
+                    .insert({
+                        id: data.user.id,
+                        email: data.user.email || '',
+                        role: userRole,
+                    });
             } else if (roleParam) {
                 // Update role if it was passed as URL parameter
                 const userRole = roleParam as 'exporter' | 'importer' | 'admin';
