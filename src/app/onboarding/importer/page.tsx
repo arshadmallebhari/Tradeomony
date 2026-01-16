@@ -62,18 +62,20 @@ export default function ImporterOnboarding() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');
 
-            // Create importer profile
+            // Create importer profile with optional fields
+            const profileData: any = {
+                user_id: user.id,
+                company_name: formData.companyName || null,
+                country: formData.country || null,
+                city: formData.city || null,
+                interested_categories: formData.interestedCategories.length > 0 ? formData.interestedCategories : null,
+                phone: formData.phone || null,
+                website: formData.website || null,
+            };
+
             const { error: profileError } = await (supabase
                 .from('importer_profiles') as any)
-                .insert({
-                    user_id: user.id,
-                    company_name: formData.companyName,
-                    country: formData.country,
-                    city: formData.city,
-                    interested_categories: formData.interestedCategories,
-                    phone: formData.phone,
-                    website: formData.website,
-                });
+                .insert(profileData);
 
             if (profileError) throw profileError;
 

@@ -87,23 +87,25 @@ export default function ExporterOnboarding() {
             // Upload images
             const imageUrls = await uploadImages(user.id);
 
-            // Create exporter profile
+            // Create exporter profile with optional fields
+            const profileData: any = {
+                user_id: user.id,
+                company_name: formData.companyName || null,
+                country: formData.country || null,
+                city: formData.city || null,
+                products: formData.products.length > 0 ? formData.products : null,
+                moq: formData.moq ? parseInt(formData.moq) : null,
+                moq_unit: formData.moqUnit,
+                certifications: formData.certifications.length > 0 ? formData.certifications : null,
+                product_images: imageUrls.length > 0 ? imageUrls : null,
+                description: formData.description || null,
+                phone: formData.phone || null,
+                website: formData.website || null,
+            };
+
             const { error: profileError } = await (supabase
                 .from('exporter_profiles') as any)
-                .insert({
-                    user_id: user.id,
-                    company_name: formData.companyName,
-                    country: formData.country,
-                    city: formData.city,
-                    products: formData.products,
-                    moq: parseInt(formData.moq),
-                    moq_unit: formData.moqUnit,
-                    certifications: formData.certifications,
-                    product_images: imageUrls,
-                    description: formData.description,
-                    phone: formData.phone,
-                    website: formData.website,
-                });
+                .insert(profileData);
 
             if (profileError) throw profileError;
 
