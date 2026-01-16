@@ -130,6 +130,9 @@ export default function LoginPage() {
             // Profile exists, redirect based on role
             const profile = profileData as { role: string; onboarding_completed: boolean } | null;
 
+            // Refresh router to re-evaluate server components with new auth state
+            router.refresh();
+
             if (profile?.role === 'admin') {
                 console.log('Redirecting to admin dashboard');
                 router.push('/admin/dashboard');
