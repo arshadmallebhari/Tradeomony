@@ -18,6 +18,7 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const [hasRedirected, setHasRedirected] = useState(false);
 
     // Check if user is already logged in
     useEffect(() => {
@@ -28,8 +29,9 @@ export default function LoginPage() {
                 console.log('Checking authentication status...');
                 const { data: { session } } = await supabase.auth.getSession();
                 
-                if (session?.user) {
+                if (session?.user && !hasRedirected) {
                     console.log('User already logged in:', session.user.id);
+                    setHasRedirected(true);
                     
                     // User is logged in, check their profile and redirect
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,10 +86,11 @@ export default function LoginPage() {
         return () => {
             isMounted = false;
         };
-    }, [router]);
-
+    }, [hasRedirected]);
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (hasRedirected) return; // Prevent multiple submissions
+        
         setIsLoading(true);
         setError('');
 
@@ -147,10 +150,8 @@ export default function LoginPage() {
                 console.log('Importer user - redirecting to importer dashboard');
             }
 
-            console.log('Refreshing router and redirecting to:', redirectPath);
-            
-            // Refresh router to re-evaluate server components
-            router.refresh();
+            console.log('Login successful, redirecting to:', redirectPath);
+            setHasRedirected(true);
             
             // Use window.location for hard redirect to ensure navigation happens
             window.location.href = redirectPath;
