@@ -14,23 +14,26 @@ export async function GET(request: Request) {
             
             if (error) {
                 console.error('Auth callback error:', error);
-                // Still redirect even on error, let the client handle it
-                return NextResponse.redirect(redirectUrl);
+                // Redirect to login on error
+                return NextResponse.redirect(new URL('/login', requestUrl.origin));
             }
 
             if (!data.user) {
                 console.error('No user data in callback');
-                return NextResponse.redirect(redirectUrl);
+                return NextResponse.redirect(new URL('/login', requestUrl.origin));
             }
 
-            // Check if profile exists, create if needed for OAuth users
+            console.log('Auth callback: User authenticated', data.user.id);
+
+            // Check if profile exists, create if needed
             const { data: existingProfile, error: selectError } = await supabase
                 .from('profiles')
-                .select('id')
+                .select('id, role')
                 .eq('id', data.user.id)
-                .single();
+                .maybeSingle();
 
             if (!existingProfile) {
+                console.log('Profile not found, creating profile for OAuth user');
                 // Determine role: use URL param if provided, fall back to metadata, default to 'importer'
                 const userRole = (roleParam || data.user.user_metadata?.role || 'importer') as 'exporter' | 'importer' | 'admin';
                 
@@ -42,6 +45,8 @@ export async function GET(request: Request) {
                         id: data.user.id,
                         email: data.user.email || '',
                         role: userRole,
+                        status: 'pending',
+                        onboarding_completed: false,
                     });
 
                 if (insertError) {
@@ -56,6 +61,9 @@ export async function GET(request: Request) {
                     .update({ role: userRole })
                     .eq('id', data.user.id);
             }
+
+            // Redirect to onboarding
+            return NextResponse.redirect(redirectUrl);
         }
     } catch (error) {
         console.error('Unexpected error in auth callback:', error);

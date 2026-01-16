@@ -78,38 +78,91 @@ export default function SignupPage() {
             return;
         }
 
+        if (!email) {
+            setError('Please enter an email address');
+            return;
+        }
+
+        if (!role) {
+            setError('Please select a role');
+            return;
+        }
+
         setIsLoading(true);
         setError('');
 
         try {
             console.log('Starting email signup with role:', role);
             
-            const { data, error } = await supabase.auth.signUp({
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
                         role: role,
                     },
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: `${window.location.origin}/auth/callback?role=${role}`,
                 },
             });
 
-            if (error) {
-                console.error('Signup error:', error);
-                throw error;
+            if (authError) {
+                console.error('Signup error:', authError);
+                throw authError;
             }
 
-            console.log('Signup successful:', data.user?.id);
-            
-            // Wait for trigger to create profile
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            if (!authData.user) {
+                throw new Error('Failed to create user account');
+            }
 
-            // Redirect to onboarding
+            console.log('User signup successful:', authData.user.id);
+            
+            // Wait for profile trigger to create profile
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Check if profile was created by trigger
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('id, role, onboarding_completed')
+                .eq('id', authData.user.id)
+                .maybeSingle();
+
+            console.log('Profile check:', { profileData, profileError });
+
+            // If profile doesn't exist, try to create it manually
+            if (!profileData) {
+                console.log('Profile not found, creating manually...');
+                const { error: insertError } = await (supabase as any)
+                    .from('profiles')
+                    .insert({
+                        id: authData.user.id,
+                        email: authData.user.email || email,
+                        role: role,
+                        status: 'pending',
+                        onboarding_completed: false,
+                    });
+
+                if (insertError) {
+                    console.error('Failed to create profile:', insertError);
+                    throw new Error('Failed to setup profile. Please try again.');
+                }
+                console.log('Profile created manually');
+            }
+
+            // Check if email confirmation is required
+            if (!authData.session) {
+                // Email confirmation is enabled - show confirmation message
+                setError('');
+                alert('Account created! Please check your email to confirm your account before logging in.');
+                router.push('/login');
+                return;
+            }
+
+            // No email confirmation needed - proceed to onboarding
+            console.log('Redirecting to onboarding');
             router.push('/onboarding');
         } catch (error: any) {
             console.error('Signup error:', error);
-            setError(error.message || 'Failed to create account');
+            setError(error.message || 'Failed to create account. Please try again.');
         } finally {
             setIsLoading(false);
         }
