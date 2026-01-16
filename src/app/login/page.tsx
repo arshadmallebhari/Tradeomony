@@ -146,15 +146,11 @@ export default function LoginPage() {
 
             console.log('Refreshing router and redirecting to:', redirectPath);
             
-            // Refresh router first to re-evaluate server components
+            // Refresh router to re-evaluate server components
             router.refresh();
             
-            // Wait a moment for refresh, then navigate
-            setTimeout(() => {
-                router.push(redirectPath);
-            }, 300);
-            
-            // Don't set loading to false here - let it stay true during navigation
+            // Use window.location for hard redirect to ensure navigation happens
+            window.location.href = redirectPath;
         } catch (error: any) {
             console.error('Login error:', error);
             setError(error.message || 'Failed to login. Please try again.');
