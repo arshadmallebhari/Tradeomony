@@ -21,21 +21,24 @@ export async function GET(request: Request) {
 
             if (!existingProfile) {
                 // Determine role: use URL param if provided, fall back to metadata, default to 'importer'
-                const userRole = roleParam || data.user.user_metadata?.role || 'importer';
+                const userRole = (roleParam || data.user.user_metadata?.role || 'importer') as 'exporter' | 'importer' | 'admin';
                 
                 // Create profile for OAuth users
-                await supabase.from('profiles').insert([
-                    {
-                        id: data.user.id,
-                        email: data.user.email,
-                        role: userRole,
-                    },
-                ]);
-            } else if (roleParam) {
-                // Update role if it was passed as URL parameter
                 await supabase
                     .from('profiles')
-                    .update({ role: roleParam })
+                    .insert(
+                        {
+                            id: data.user.id,
+                            email: data.user.email || '',
+                            role: userRole,
+                        }
+                    );
+            } else if (roleParam) {
+                // Update role if it was passed as URL parameter
+                const userRole = roleParam as 'exporter' | 'importer' | 'admin';
+                await supabase
+                    .from('profiles')
+                    .update({ role: userRole })
                     .eq('id', data.user.id);
             }
         }
