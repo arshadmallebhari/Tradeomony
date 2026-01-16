@@ -4,12 +4,43 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: Request) {
     const requestUrl = new URL(request.url);
     const code = requestUrl.searchParams.get('code');
+    const roleParam = requestUrl.searchParams.get('role');
+    const redirectUrl = new URL('/onboarding', requestUrl.origin);
 
     if (code) {
         const supabase = await createClient();
-        await supabase.auth.exchangeCodeForSession(code);
+        const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+        
+        if (!error && data.user) {
+            // Check if profile exists, create if needed for OAuth users
+            const { data: existingProfile } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('id', data.user.id)
+                .single();
+
+            if (!existingProfile) {
+                // Determine role: use URL param if provided, fall back to metadata, default to 'importer'
+                const userRole = roleParam || data.user.user_metadata?.role || 'importer';
+                
+                // Create profile for OAuth users
+                await supabase.from('profiles').insert([
+                    {
+                        id: data.user.id,
+                        email: data.user.email,
+                        role: userRole,
+                    },
+                ]);
+            } else if (roleParam) {
+                // Update role if it was passed as URL parameter
+                await supabase
+                    .from('profiles')
+                    .update({ role: roleParam })
+                    .eq('id', data.user.id);
+            }
+        }
     }
 
     // URL to redirect to after sign in process completes
-    return NextResponse.redirect(new URL('/onboarding', requestUrl.origin));
+    return NextResponse.redirect(redirectUrl);
 }

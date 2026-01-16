@@ -62,6 +62,8 @@ export async function middleware(request: NextRequest) {
         }
     );
 
+    // Refresh session to keep it alive
+    await supabase.auth.refreshSession();
     const { data: { user } } = await supabase.auth.getUser();
 
     // Protected paths

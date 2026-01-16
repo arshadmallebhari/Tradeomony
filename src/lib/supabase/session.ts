@@ -62,6 +62,8 @@ export async function updateSession(request: NextRequest) {
         }
     );
 
+    // Refresh session to keep it alive
+    await supabase.auth.refreshSession();
     const { data: { user } } = await supabase.auth.getUser();
     console.log('Middleware Path:', request.nextUrl.pathname, 'User ID:', user?.id);
 

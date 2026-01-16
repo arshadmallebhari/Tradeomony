@@ -16,4 +16,8 @@ const client = (supabaseUrl && supabaseAnonKey)
   ? createClient<Database>(supabaseUrl, supabaseAnonKey)
   : null;
 
+if (!client) {
+  throw new Error('Supabase client is not initialized. Check your environment variables.');
+}
+
 export const supabase = client as SupabaseClient<Database>;
